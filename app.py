@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Configuración de la página
 st.set_page_config(page_title="Comparador Luz - Finteligen", page_icon="⚡", layout="centered")
 
-# 2. Barra lateral (Sidebar) - COLORES CORREGIDOS
+# 2. Sidebar (Lateral Izquierda)
 with st.sidebar:
     st.markdown(f"""
         <div style='margin-bottom: 20px;'>
@@ -27,15 +27,15 @@ with st.sidebar:
     c2 = st.number_input("Energía Llana (P2)", value=50.0)
     c3 = st.number_input("Energía Valle (P3)", value=100.0)
 
-# 3. Encabezado central (Texto BLANCO sobre fondo AZUL OSCURO)
+# 3. Título Principal (CORREGIDO: Texto BLANCO forzado)
 st.markdown("""
-    <div style="background-color:#003366; padding:30px; border-radius:15px; text-align:center; color:white; margin-bottom:20px;">
-        <h1 style="margin:0; color:white !important; font-size:32px;">⚡ Comparador de Tarifas Eléctricas</h1>
-        <p style="margin:5px 0 0 0; color:white !important; opacity:0.9; font-size:1rem;">Análisis de ahorro basado en los datos del Excel</p>
+    <div style="background-color:#003366; padding:30px; border-radius:15px; text-align:center; margin-bottom:20px;">
+        <h1 style="margin:0; color: white !important; font-size:32px; font-weight: bold;">⚡ Comparador de Tarifas Eléctricas</h1>
+        <p style="margin:5px 0 0 0; color: white !important; opacity:0.9; font-size:1rem;">Podio de ahorro exclusivo para el Grupo Finanzas</p>
     </div>
     """, unsafe_allow_html=True)
 
-# 4. Tarifas (Esluz Solar excluida)
+# 4. Base de Datos (13 Tarifas)
 tarifas = [
     {"Nombre": "OCTOPUS SUN CLUB", "p1": 0.097, "p2": 0.027, "e1": 0.12, "e2": 0.12, "e3": 0.12},
     {"Nombre": "NUFRI Flex", "p1": 0.094533, "p2": 0.046371, "e1": 0.165812, "e2": 0.090774, "e3": 0.058239},
@@ -52,7 +52,7 @@ tarifas = [
     {"Nombre": "PVPC-REGULADO", "p1": 0.08443127, "p2": 0.00198746, "e1": 0.1732, "e2": 0.1042, "e3": 0.0862},
 ]
 
-# 5. Lógica de Cálculos (Sin cambios)
+# 5. Lógica Matemática
 BS_DIARIO = 0.57363674 / 30 
 ALQ_DIARIO = 0.81 / 30
 IEE_FACTOR = 0.0511269
@@ -68,8 +68,6 @@ for t in tarifas:
     iee = base_iee * IEE_FACTOR
     total_bruto = base_iee + iee + alquiler
     total_neto = total_bruto * (1 + IVA_FACTOR)
-    
-    # Aquí unificamos el nombre a 'Compañía' para evitar el KeyError
     resultados.append({"Compañía": t["Nombre"], "Total Factura (€)": round(total_neto, 2)})
 
 # 6. Procesamiento TOP 3
@@ -77,11 +75,11 @@ df_final = pd.DataFrame(resultados).sort_values("Total Factura (€)").reset_ind
 df_top3 = df_final.head(3).copy()
 df_top3.index = df_top3.index + 1
 
-# 7. Ganador destacado
+# 7. Ganador
 mejor = df_top3.iloc[0]
 st.markdown(f"""
-    <div style="background-color:#00c853; padding:25px; border-radius:15px; text-align:center; color:white; margin:10px 0; border: 2px solid #ffffff; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
-        <p style="margin:0; font-size: 1.1rem; font-weight: 300; letter-spacing: 1px; color: white !important;">🥇 TU MEJOR OPCIÓN ES</p>
+    <div style="background-color:#00c853; padding:25px; border-radius:15px; text-align:center; margin:10px 0; border: 2px solid #ffffff;">
+        <p style="margin:0; font-size: 1.1rem; font-weight: 300; color: white !important;">🥇 TU MEJOR OPCIÓN ES</p>
         <h1 style="margin:10px 0; font-size:38px; font-weight: bold; color: white !important;">{mejor['Compañía']}</h1>
         <h2 style="margin:0; font-size:28px; color: white !important;">{mejor['Total Factura (€)']} € <span style="font-size: 0.9rem;">(Mensual estimado)</span></h2>
     </div>
@@ -90,7 +88,7 @@ st.markdown(f"""
 st.subheader("🥈🥉 Resto del Podio")
 st.table(df_top3)
 
-# 8. Pie de página discreto
+# 8. Footer discreto
 st.divider()
-st.caption(f"Datos basados en el Excel actualizado el 19/02/2026.")
+st.caption(f"Precios actualizados según tarifas vigentes en el Excel (19/02/2026).")
 st.caption("🔒 Privacidad: Tus datos se procesan localmente y no se comparten con nadie.")
