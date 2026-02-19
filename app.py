@@ -6,7 +6,7 @@ st.set_page_config(page_title="Comparador Luz Grupo Finanzas", page_icon="⚡", 
 st.title("⚡ Comparador de Tarifas Eléctricas")
 st.markdown("Introduce los datos de tu factura respetando los periodos P1, P2 y P3.")
 
-# --- INPUTS (Nomenclatura P1, P2, P3 tal cual el Excel) ---
+# --- INPUTS ---
 with st.sidebar:
     st.header("📋 Datos de Factura")
     dias = st.number_input("Días Facturados", value=30)
@@ -20,7 +20,7 @@ with st.sidebar:
     c2_kwh = st.number_input("Energía Llana - P2", value=50.0)
     c3_kwh = st.number_input("Energía Valle - P3", value=100.0)
 
-# --- BASE DE DATOS EXACTA ---
+# --- BASE DE DATOS ---
 tarifas = [
     {"Nombre": "OCTOPUS SUN CLUB", "p1": 0.097000, "p2": 0.027000, "e1": 0.120000, "e2": 0.120000, "e3": 0.120000},
     {"Nombre": "ESLUZ SOLAR FIJA 2.0", "p1": 0.080247, "p2": 0.007407, "e1": 0.182000, "e2": 0.134000, "e3": 0.085000},
@@ -38,8 +38,7 @@ tarifas = [
     {"Nombre": "PVPC (Semiregulado)", "p1": 0.084431, "p2": 0.001987, "e1": 0.173200, "e2": 0.104200, "e3": 0.086200},
 ]
 
-# --- LÓGICA DE CÁLCULO (Clon del Excel) ---
-# Valores diarios extraídos de tus celdas de ejemplo (30 días)
+# --- LÓGICA DE CÁLCULO ---
 VALOR_BS_DIARIO = 0.57363674 / 30 
 VALOR_ALQ_DIARIO = 0.81 / 30
 IEE_FACTOR = 0.0511269
@@ -48,22 +47,14 @@ IVA_FACTOR = 0.21
 resultados = []
 
 for t in tarifas:
-    # 1. Término Potencia
     coste_pot = (p1_kw * t["p1"] * dias) + (p2_kw * t["p2"] * dias)
-    # 2. Término Energía
     coste_ene = (c1_kwh * t["e1"]) + (c2_kwh * t["e2"]) + (c3_kwh * t["e3"])
-    # 3. Otros fijos
     bono_social = VALOR_BS_DIARIO * dias
     alquiler = VALOR_ALQ_DIARIO * dias
-    
-    # 4. Impuesto Eléctrico (Base = Potencia + Energía + Bono Social)
     base_iee = coste_pot + coste_ene + bono_social
     iee = base_iee * IEE_FACTOR
-    
-    # 5. IVA (Base = Todo lo anterior + Alquiler)
     total_bruto = base_iee + alquiler + iee
     iva = total_bruto * IVA_FACTOR
-    
     total_neto = total_bruto + iva
     
     resultados.append({
@@ -80,5 +71,6 @@ df = pd.DataFrame(resultados).sort_values("Total Factura (€)")
 st.subheader("📊 Tabla Comparativa")
 st.table(df)
 
+# AQUÍ ESTABA EL ERROR: Cambiamos 'Nombre' por 'Compañía'
 mejor = df.iloc[0]
-st.success(f"🏆 La mejor opción es **{mejor['Nombre']}** con un total de **{mejor['Total Factura (€)']}€**")
+st.success(f"🏆 La mejor opción es **{mejor['Compañía']}** con un total de **{mejor['Total Factura (€)']}€**")
