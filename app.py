@@ -8,9 +8,9 @@ st.set_page_config(page_title="Comparador Luz - Finteligen", page_icon="⚡", la
 with st.sidebar:
     st.markdown(f"""
         <div style='margin-bottom: 20px;'>
-            <p style='margin: 0; font-size: 0.85rem; color: #000000;'>Desarrollado por:</p>
+            <p style='margin: 0; font-size: 0.85rem; color: #FFFFFF;'>Desarrollado por:</p>
             <a href='https://www.finteligen.com' target='_blank' style='text-decoration: none; color: #007bff; font-weight: bold; font-size: 1rem;'>www.finteligen.com</a>
-            <p style='margin-top: 10px; margin-bottom: 0; font-size: 0.85rem; color: #000000;'>Actualizado a:</p>
+            <p style='margin-top: 10px; margin-bottom: 0; font-size: 0.85rem; color: #FFFFFF;'>Actualizado a:</p>
             <p style='margin: 0; font-size: 0.85rem; font-weight: bold; color: #FFFFFF;'>19 de febrero de 2026</p>
         </div>
     """, unsafe_allow_html=True)
