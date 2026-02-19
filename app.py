@@ -90,5 +90,5 @@ st.table(df_top3)
 
 # 8. Footer discreto
 st.divider()
-st.caption(f"Precios actualizados según tarifas vigentes en el Excel (19/02/2026).")
+st.caption(f"Precios actualizados según tarifas vigentes a fecha (20/02/2026).")
 st.caption("🔒 Privacidad: Tus datos se procesan localmente y no se comparten con nadie.")
