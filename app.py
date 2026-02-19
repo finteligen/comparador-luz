@@ -11,7 +11,7 @@ with st.sidebar:
             <p style='margin: 0; font-size: 0.85rem; color: #FFFFFF;'>Desarrollado por:</p>
             <a href='https://www.finteligen.com' target='_blank' style='text-decoration: none; color: #007bff; font-weight: bold; font-size: 1rem;'>www.finteligen.com</a>
             <p style='margin-top: 10px; margin-bottom: 0; font-size: 0.85rem; color: #FFFFFF;'>Actualizado a:</p>
-            <p style='margin: 0; font-size: 0.85rem; font-weight: bold; color: #FFFFFF;'>19 de febrero de 2026</p>
+            <p style='margin: 0; font-size: 0.85rem; font-weight: bold; color: #FFFFFF;'>20 de febrero de 2026</p>
         </div>
     """, unsafe_allow_html=True)
     
