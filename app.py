@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Configuración de la página
 st.set_page_config(page_title="Comparador Luz - Finteligen", page_icon="⚡", layout="centered")
 
-# 2. Marca de agua y fecha en el lateral (Estilo discreto)
+# 2. Sidebar con estilos corregidos
 with st.sidebar:
     st.markdown(f"""
         <div style='margin-bottom: 20px;'>
@@ -35,7 +35,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# 4. Base de Datos (13 Tarifas - Esluz Solar Fija 2.0 excluida)
+# 4. Base de Datos (13 Tarifas - Esluz Solar excluida)
 tarifas = [
     {"Nombre": "OCTOPUS SUN CLUB", "p1": 0.097, "p2": 0.027, "e1": 0.12, "e2": 0.12, "e3": 0.12},
     {"Nombre": "NUFRI Flex", "p1": 0.094533, "p2": 0.046371, "e1": 0.165812, "e2": 0.090774, "e3": 0.058239},
@@ -52,7 +52,7 @@ tarifas = [
     {"Nombre": "PVPC-REGULADO", "p1": 0.08443127, "p2": 0.00198746, "e1": 0.1732, "e2": 0.1042, "e3": 0.0862},
 ]
 
-# 5. Lógica Matemática
+# 5. Cálculos (Lógica idéntica al Excel)
 BS_DIARIO = 0.57363674 / 30 
 ALQ_DIARIO = 0.81 / 30
 IEE_FACTOR = 0.0511269
@@ -60,4 +60,37 @@ IVA_FACTOR = 0.21
 
 resultados = []
 for t in tarifas:
-    c_pot = (p1_kw * t["p1"] * dias) + (p2
+    c_pot = (p1_kw * t["p1"] * dias) + (p2_kw * t["p2"] * dias)
+    c_ene = (c1 * t["e1"]) + (c2 * t["e2"]) + (c3 * t["e3"])
+    bono_social = BS_DIARIO * dias
+    alquiler = ALQ_DIARIO * dias
+    base_iee = c_pot + c_ene + bono_social
+    iee = base_iee * IEE_FACTOR
+    total_bruto = base_iee + iee + alquiler
+    total_neto = total_bruto * (1 + IVA_FACTOR)
+    
+    # Aquí unificamos el nombre a 'Compañía' para evitar el KeyError
+    resultados.append({"Compañía": t["Nombre"], "Total Factura (€)": round(total_neto, 2)})
+
+# 6. Procesamiento TOP 3
+df_final = pd.DataFrame(resultados).sort_values("Total Factura (€)").reset_index(drop=True)
+df_top3 = df_final.head(3).copy()
+df_top3.index = df_top3.index + 1
+
+# 7. Ganador
+mejor = df_top3.iloc[0]
+st.markdown(f"""
+    <div style="background-color:#00c853; padding:25px; border-radius:15px; text-align:center; color:white; margin:10px 0; border: 2px solid #ffffff; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
+        <p style="margin:0; font-size: 1.1rem; font-weight: 300; letter-spacing: 1px;">🥇 TU MEJOR OPCIÓN ES</p>
+        <h1 style="margin:10px 0; font-size:38px; font-weight: bold; color: white !important;">{mejor['Compañía']}</h1>
+        <h2 style="margin:0; font-size:28px; color: white !important;">{mejor['Total Factura (€)']} € <span style="font-size: 0.9rem;">(Mensual estimado)</span></h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.subheader("🥈🥉 Resto del Podio")
+st.table(df_top3)
+
+# 8. Pie de página discreto
+st.divider()
+st.caption(f"Datos basados en el Excel actualizado el 19/02/2026.")
+st.caption("🔒 Privacidad: Tus datos no se guardan ni se comparten. El cálculo es local y privado.")
